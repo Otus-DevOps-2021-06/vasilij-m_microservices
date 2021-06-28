@@ -1,0 +1,15 @@
+---
+- name: Run reddit app in docker container
+  hosts: app
+  become: true
+
+  tasks:
+  - name: Run reddit app in docker container
+    docker_container:
+      name: "{{ docker_container_name }}"
+      image: "{{ docker_container_image }}"
+      state: started
+      exposed_ports:
+        - "{{ docker_container_port }}"
+      published_ports:
+        - "{{ docker_container_port }}:{{ docker_container_port }}"

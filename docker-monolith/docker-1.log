@@ -1,0 +1,6 @@
+REPOSITORY                  TAG       IMAGE ID       CREATED              SIZE
+vasilij-m/ubuntu-tmp-file   latest    973d2d70ac35   About a minute ago   63.1MB
+ubuntu                      18.04     7d0d8fa37224   9 days ago           63.1MB
+
+Образ - это неизменяемая сущность, состоящая из read-only слоев, в которых хранятся изменения файловой системы (базовый образ, библиотеки, зависимости, файлы приложения и т.д.).
+Контейнер - это запущенный образ, который имеет опрделенное состояние (created, restarting, running, removing, paused, exited, or dead). В контейнере поверх read-only слоев создается один слой с возможностью записи.

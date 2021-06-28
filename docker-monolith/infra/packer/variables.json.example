@@ -1,0 +1,7 @@
+{
+  "yc_folder_id": "dcscewfvasdqs6ikcg",
+  "yc_source_image_id": "windows-xp-sp1",
+  "yc_service_account_key_file": "packer/files/key.json",
+  "yc_subnet_id": "sadhbasdt6adq2",
+  "yc_app_name": "rabbit"
+}

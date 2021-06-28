@@ -1,0 +1,23 @@
+{
+  "builders": [
+      {
+          "type": "yandex",
+          "service_account_key_file": "{{user `yc_service_account_key_file`}}",
+          "folder_id": "{{user `yc_folder_id`}}",
+          "source_image_id": "{{user `yc_source_image_id`}}",
+          "image_name": "{{user `yc_app_name`}}-base-docker-{{timestamp}}",
+          "image_family": "{{user `yc_app_name`}}-base-docker",
+          "ssh_username": "ubuntu",
+          "platform_id": "standard-v2",
+          "use_ipv4_nat": true
+      }
+  ],
+  "provisioners": [
+      {
+          "type": "ansible",
+          "playbook_file": "ansible/playbooks/docker_install.yml",
+          "groups": ["app"],
+          "inventory_directory": "ansible/environments/stage"
+      }
+  ]
+}
