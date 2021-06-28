@@ -1,0 +1,10 @@
+cloud_id                  = "bewhmciwneck99btectdn"
+folder_id                 = "b3rfdc1cqjf3qs6ikcg"
+zone                      = "ru-central1-a"
+reddit_app_zone           = "ru-central1-a"
+image_id                  = "fdcwf7976l8ktlmupk53j"
+public_key_path           = "~/.ssh/yctf.pub"
+private_key_path          = "~/.ssh/yctf"
+subnet_id                 = "edweddw75cs0jb3uv0v"
+service_account_key_file  = ".files/key.json"
+reddit_app_instance_count = 2

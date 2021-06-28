@@ -1,0 +1,57 @@
+---
+- name: Install docker & docker-compose
+  hosts: app
+  become: true
+
+  tasks:
+  - name: Update repositories cache and install required packages
+    apt:
+      name: "{{ item }}"
+      state: present
+      update_cache: yes
+      cache_valid_time: "172800"
+    loop: "{{ required_packages }}"
+
+  - name: Add Docker GPG apt Key
+    apt_key:
+      url: "{{ docker_repo_key_url }}"
+      state: present
+
+  - name: Add Docker Repository
+    apt_repository:
+      repo: "{{ docker_repo }}"
+      state: present
+
+  - name: Update apt cache
+    apt:
+      update_cache: yes
+      cache_valid_time: "172800"
+
+  - name: Install docker packages
+    apt:
+      pkg: "{{ item }}"
+    loop: "{{ docker_packages }}"
+
+  - name: Ensure user added to the docker group.
+    user:
+      name: "{{ docker_user }}"
+      groups: "{{ docker_group }}"
+      append: true
+
+  - name: Install Python dependencies for PIP
+    apt:
+      name: "{{ item }}"
+      state: present
+    loop: "{{ python_pip_dependencies }}"
+
+  - name: Ensure pip is updated
+    pip:
+      name: pip
+      state: latest
+
+  - name: Install pip packages for docker-compose
+    pip:
+      name: "{{ item }}"
+      executable: "{{ python_pip_executable }}"
+      state: present
+    loop: "{{ python_pip_packages }}"
