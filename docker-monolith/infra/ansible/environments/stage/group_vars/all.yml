@@ -22,7 +22,6 @@ python_pip_dependencies:
   - python3-setuptools
   - python3-pip
   - virtualenv
-# image_id                  = "fd80viupr3qjr5g6g9du"
 
 # PIP packages for docker compose
 python_pip_packages:
