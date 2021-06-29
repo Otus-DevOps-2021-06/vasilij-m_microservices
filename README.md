@@ -51,7 +51,7 @@ vasilij-m microservices repository
 Базовое имя проекта берется из переменной окружения `COMPOSE_PROJECT_NAME`, по дефолту её значение - имя директории, из которой запускается docker-compose. Соответственно, чтобы изменить имя проекта, нужно переопределить переменну окружения `COMPOSE_PROJECT_NAME` либо через `export`, либо в файле `.env`. Еще один способ - передать имя проекта через ключ `-p`: `docker-compose -p my_super_project up`.
 
 **2. Доп. задание:**
-  * Объяснил отличия команд `docker inspect <u_container_id>` и `docker inspect <u_image_id>`
+  *
 
 
 ***Вывод списка контейнеров в сети `src_back_net`с помощью утилиты `jq`:***
