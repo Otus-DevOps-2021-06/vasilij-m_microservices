@@ -4,4 +4,4 @@ variables.json
 *.tfstate.backup
 *.tfvars
 .terraform/
-reddit.env
+.env
