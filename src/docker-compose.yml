@@ -1,4 +1,5 @@
 version: '3.3'
+
 services:
   post_db:
     image: mongo:${MONGO_TAG}
@@ -6,6 +7,7 @@ services:
       - post_db:${MONGO_DB_PATH}
     networks:
       - back_net
+
   ui:
     build: ./ui
     image: ${USERNAME}/ui:${UI_TAG}
@@ -13,12 +15,14 @@ services:
       - "${UI_HOST_PORT}:${UI_CONTAINER_PORT}/tcp"
     networks:
       - front_net
+
   post:
     build: ./post-py
     image: ${USERNAME}/post:${POST_TAG}
     networks:
       - back_net
       - front_net
+
   comment:
     build: ./comment
     image: ${USERNAME}/comment:${COMMENT_TAG}

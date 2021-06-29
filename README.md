@@ -53,12 +53,14 @@ vasilij-m microservices repository
 Базовое имя проекта берется из переменной окружения `COMPOSE_PROJECT_NAME`, по дефолту её значение - имя директории, из которой запускается docker-compose. Соответственно, чтобы изменить имя проекта, нужно переопределить переменну окружения `COMPOSE_PROJECT_NAME` либо через `export`, либо в файле `.env`. Еще один способ - передать имя проекта через ключ `-p`: `docker-compose -p my_super_project up`.
 
 **2. Доп. задание:**
-Создайте docker-compose.override.yml для reddit проекта, который позволит:
+Создал файл `docker-compose.override.yml` для reddit проекта, который позволяет:
 * Изменять код каждого из приложений, не выполняя сборку образа
 * Запускать puma для руби приложений в дебаг режиме с двумя воркерами (флаги --debug и -w 2)
-<в процессе...>
 
-***Вывод списка контейнеров в сети `src_back_net`с помощью утилиты `jq`:***
+По дефолту Compose читает два файла: `docker-compose.yml` и, если есть, `docker-compose.override.yml`. Обычно в `docker-compose.yml` описана базовая конфиуграция проекта, а файл `docker-compose.override.yml` либо дополняет, либо изменяет её.
+
+
+***! Вывод списка контейнеров в сети `src_back_net`с помощью утилиты `jq`:***
 ```
 docker network inspect src_back_net | jq '.[] | .Containers | .[] | .Name'
 ```
