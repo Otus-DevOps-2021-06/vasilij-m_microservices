@@ -33,3 +33,28 @@ vasilij-m microservices repository
   docker run -d --network=reddit --env POST_SERVICE_HOST=post_service --env COMMENT_SERVICE_HOST=comment_service -p 9292:9292 vasiilij/ui:1.0
   ```
   * Собрал образы на основе Alpine Linux для сервисов `UI` и `comment`, чем уменьшил размер образа до ~280 Mb. Инструкции по сборке - в докерфайлах `ui/Dockerfile.1` и `comment/Dockerfile.1`
+
+
+### ДЗ №18. Docker: сети, docker-compose
+
+#### Выполнено:
+**1. Основное задание:**
+  * Изучены варианты подключения docker-контейнеров к сети с помощью драйверов `none`, `host`, `bridge`
+  * Создание кастомной сети с bridge драйвером, подключение к ней контейнеров с возможностью их обнаружения по алиасам
+  * Описание и запуск сервисов с помощью docker-compose, параметризация с помощью переменных окружения, записанных в `.env` файл
+
+Все создаваемые docker-compose сущности имеют одинаковый префикс, к примеру `dockermicroservices_ui_1`, где
+`dockermicroservices` - базовое имя проекта.
+***Задание:***
+Узнайте как образуется базовое имя проекта. Можно ли его задать? Если можно то как?
+***Ответ:***
+Базовое имя проекта берется из переменной окружения `COMPOSE_PROJECT_NAME`, по дефолту её значение - имя директории, из которой запускается docker-compose. Соответственно, чтобы изменить имя проекта, нужно переопределить переменну окружения `COMPOSE_PROJECT_NAME` либо через `export`, либо в файле `.env`. Еще один способ - передать имя проекта через ключ `-p`: `docker-compose -p my_super_project up`.
+
+**2. Доп. задание:**
+  * Объяснил отличия команд `docker inspect <u_container_id>` и `docker inspect <u_image_id>`
+
+
+***Вывод списка контейнеров в сети `src_back_net`с помощью утилиты `jq`:***
+```
+docker network inspect src_back_net | jq '.[] | .Containers | .[] | .Name'
+```
