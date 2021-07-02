@@ -64,3 +64,17 @@ vasilij-m microservices repository
 ```
 docker network inspect src_back_net | jq '.[] | .Containers | .[] | .Name'
 ```
+
+
+### ДЗ №21. Введение в мониторинг. Системы мониторинга.
+
+**Выполнено:**
+1. Основное задание:
+  * Prometheus: запуск, конфигурация, знакомство с Web UI. Написан docker-compose файл (файл `docker/docker-compose.yml`), который поднимает контейнеры с микросервисами приложения, контейнер с Prometheus, а также контейнеры с экспортерами: node-exporter, mongodb-exporter, blackbox-exporter
+  * Мониторинг состояния микросервисов. Сбор метрик описан в файле `monitoring/prometheus/prometheus.yml`
+  * Сбор метрик хоста с использованием экспортера node-exporter
+
+2. Доп. задание:
+  * Добавлен мониторинг MongoDB с использованием экспортера mongodb экспортера от bitnami
+  * Добавлен мониторинг сервисов comment, post, ui с помощью blackbox экспортера
+  * Напишсан Makefile (в корне репозитория), который билдит образы prometheus, а также микросервисов comment post, ui, и пушит их в докер хаб
