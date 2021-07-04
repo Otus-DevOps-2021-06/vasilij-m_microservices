@@ -85,7 +85,7 @@ docker network inspect src_back_net | jq '.[] | .Containers | .[] | .Name'
 ```
 rate(ui_request_count{http_status=~"^[45].*"}[1m])
 ```
-***Используйте для первого графика (UI http requests) функцию rate аналогично второму графику (Rate of UI HTTP Requests with Error): ***
+***Используйте для первого графика (UI http requests) функцию rate аналогично второму графику (Rate of UI HTTP Requests with Error):***
 ```
 rate(ui_request_count[1m])
 ```
