@@ -1,0 +1,100 @@
+version: '3.3'
+
+services:
+  prometheus:
+    image: ${USER_NAME}/prometheus
+    ports:
+      - '9090:9090'
+    networks:
+      - prometheus_net
+    volumes:
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention=1d'
+
+  node-exporter:
+    image: prom/node-exporter:v0.15.2
+    user: root
+    networks:
+      - prometheus_net
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
+
+  mongodb-exporter:
+    image: bitnami/mongodb-exporter:0.20.5
+    user: root
+    networks:
+      - prometheus_net
+      - back_net
+    command:
+      - '--mongodb.uri=mongodb://post_db:27017'
+      - '--web.listen-address=:9216'
+
+  blackbox-exporter:
+    image: prom/blackbox-exporter:v0.19.0
+    user: root
+    networks:
+      - prometheus_net
+      - back_net
+      - front_net
+
+  cadvisor:
+    image: google/cadvisor:v0.29.0
+    networks:
+      - prometheus_net
+    ports:
+      - '8080:8080'
+    volumes:
+      - '/:/rootfs:ro'
+      - '/var/run:/var/run:rw'
+      - '/sys:/sys:ro'
+      - '/var/lib/docker/:/var/lib/docker:ro'
+
+  grafana:
+    image: ${USER_NAME}/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=secret
+    depends_on:
+      - prometheus
+    networks:
+      - prometheus_net
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+  alertmanager:
+    image: ${USER_NAME}/alertmanager
+    networks:
+      - prometheus_net
+    ports:
+      - 9093:9093
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+
+  telegraf:
+    image: ${USER_NAME}/telegraf
+    networks:
+      - prometheus_net
+    ports:
+      - 9273:9273
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  back_net:
+  front_net:
+  prometheus_net:

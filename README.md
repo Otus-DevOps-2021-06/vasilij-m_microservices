@@ -66,15 +66,91 @@ docker network inspect src_back_net | jq '.[] | .Containers | .[] | .Name'
 ```
 
 
-### ДЗ №21. Введение в мониторинг. Системы мониторинга.
+### ДЗ №22. Введение в мониторинг. Системы мониторинга.
 
-**Выполнено:**
-1. Основное задание:
+#### Выполнено:
+**1. Основное задание:**
   * Prometheus: запуск, конфигурация, знакомство с Web UI. Написан docker-compose файл (файл `docker/docker-compose.yml`), который поднимает контейнеры с микросервисами приложения, контейнер с Prometheus, а также контейнеры с экспортерами: node-exporter, mongodb-exporter, blackbox-exporter
   * Мониторинг состояния микросервисов. Сбор метрик описан в файле `monitoring/prometheus/prometheus.yml`
   * Сбор метрик хоста с использованием экспортера node-exporter
 
-2. Доп. задание:
+**2. Доп. задание:**
   * Добавлен мониторинг MongoDB с использованием экспортера mongodb экспортера от bitnami
   * Добавлен мониторинг сервисов comment, post, ui с помощью blackbox экспортера
   * Напишсан Makefile (в корне репозитория), который билдит образы prometheus, а также микросервисов comment post, ui, и пушит их в докер хаб
+
+### ДЗ №23. Мониторинг приложения и инфраструктуры
+
+***Скорость увеличения счетчика http ошибок за 1-минутный интервал:***
+rate(ui_request_count{http_status=~"^[45].*"}[1m])
+
+***Используйте для первого графика (UI http requests) функцию rate аналогично второму графику (Rate of UI HTTP Requests with Error): ***
+rate(ui_request_count[1m])
+
+***95й процентиль времени обработки запросов с помощью функции histogram_quantile():***
+histogram_quantile(0.95, sum(rate(ui_request_response_time_bucket[5m])) by (le))
+
+#### Выполнено:
+
+**Основное задание:**
+  * Описание сервисов для мониторинга вынесено в отдельный файл для docker compose'а: `docker/docker-compose-monitoring.yml`
+  * Реализована визуализация метрик с помощью Grafana, используемые в ДЗ дашборды экспортированы в `monitoring/grafana/dashboards`
+  * Настроен Alertmanager для отправки уведомлений в Slack. При попытке подключить Alertmanager к своему каналу в workspace'е DevOps team я столкнулся с ошибкой ограничения возможных подключений в 10 штук, поэтому создал свой собственный workspace.
+
+**Доп. задание *, 1:**
+
+В Makefile добавил билд и публикацию сервисов Alertmanager, Telegraf и Grafana
+
+**Доп. задание *, 2:**
+
+Активировал отдачу метрик docker (документация: https://docs.docker.com/config/daemon/prometheus/), в графану подключил дашборд Docker_Engine_Metrics (`monitoring/grafana/dashboards/Docker_Engine_Metrics.json):
+
+Добавил следующую конфигурацию в файл `/etc/docker/daemon.json` на docker хосте:
+```
+{
+  "metrics-addr" : "0.0.0.0:9323",
+  "experimental" : true
+}
+```
+В `prometheus.yml` добавил джобу, в качестве таргета указал ip адрес bridge-интерфейса docker0:
+```
+- job_name: 'docker'
+  static_configs:
+  - targets:
+    - '172.17.0.1:9323'
+```
+***Сравнение количества метрик с Cadvisor:***
+Количество метрик Docker - 452:
+```
+yc-user@docker-host:~$ curl -s localhost:9323/metrics | grep -v "^#" | wc -l
+452
+```
+Количество метрик Cadvisor - 3044:
+```
+yc-user@docker-host:~$ curl -s localhost:8080/metrics | grep -v "^#" | wc -l
+3044
+```
+**Доп. задание *, 3:**
+
+Добавил сбор метрик с Docker демона в Prometheus с помощью Telegraf. Конфиг телеграфа: `telegraf/telegraf.conf`
+Дашборд для графаны: `monitoring/grafana/dashboards/Telegraf_Docker_Metrics.json`
+
+***Сравнение количества метрик с Cadvisor:***
+Количество метрик Telegraf - 903:
+```
+yc-user@docker-host:~$ curl -s localhost:9273/metrics | grep -v "^#" | wc -l
+903
+```
+Количество метрик Cadvisor - 3044:
+```
+yc-user@docker-host:~$ curl -s localhost:8080/metrics | grep -v "^#" | wc -l
+3044
+```
+
+**Доп. задание **, 1:**
+
+Реализовал автоматическое добавление источника данных и созданных в данном ДЗ дашбордов в графану.
+Файл с конфигом истоника данных: `grafana/datasource.yml`
+Файл с конфигом дашбордов: `grafana/dashboard.yml`
+
+В графане получал ошибку `Datasource named ${DS_PROMETHEUS} was not found`, решение описано здесь: https://github.com/grafana/grafana/issues/10786#issuecomment-568788499

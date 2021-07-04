@@ -34,54 +34,8 @@ services:
       - front_net
       - prometheus_net
 
-  prometheus:
-    image: ${USER_NAME}/prometheus
-    ports:
-      - '9090:9090'
-    networks:
-      - prometheus_net
-    volumes:
-      - prometheus_data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention=1d'
-
-  node-exporter:
-    image: prom/node-exporter:v0.15.2
-    user: root
-    networks:
-      - prometheus_net
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
-
-  mongodb-exporter:
-    image: bitnami/mongodb-exporter:0.20.5
-    user: root
-    networks:
-      - prometheus_net
-      - back_net
-    command:
-      - '--mongodb.uri=mongodb://post_db:27017'
-      - '--web.listen-address=:9216'
-
-  blackbox-exporter:
-    image: prom/blackbox-exporter:v0.19.0
-    user: root
-    networks:
-      - prometheus_net
-      - back_net
-      - front_net
-
 volumes:
   post_db:
-  prometheus_data:
 
 networks:
   back_net:
