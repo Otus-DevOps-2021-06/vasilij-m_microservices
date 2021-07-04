@@ -82,13 +82,17 @@ docker network inspect src_back_net | jq '.[] | .Containers | .[] | .Name'
 ### ДЗ №23. Мониторинг приложения и инфраструктуры
 
 ***Скорость увеличения счетчика http ошибок за 1-минутный интервал:***
+```
 rate(ui_request_count{http_status=~"^[45].*"}[1m])
-
+```
 ***Используйте для первого графика (UI http requests) функцию rate аналогично второму графику (Rate of UI HTTP Requests with Error): ***
+```
 rate(ui_request_count[1m])
-
+```
 ***95й процентиль времени обработки запросов с помощью функции histogram_quantile():***
+```
 histogram_quantile(0.95, sum(rate(ui_request_response_time_bucket[5m])) by (le))
+```
 
 #### Выполнено:
 
@@ -97,11 +101,11 @@ histogram_quantile(0.95, sum(rate(ui_request_response_time_bucket[5m])) by (le))
   * Реализована визуализация метрик с помощью Grafana, используемые в ДЗ дашборды экспортированы в `monitoring/grafana/dashboards`
   * Настроен Alertmanager для отправки уведомлений в Slack. При попытке подключить Alertmanager к своему каналу в workspace'е DevOps team я столкнулся с ошибкой ограничения возможных подключений в 10 штук, поэтому создал свой собственный workspace.
 
-**Доп. задание *, 1:**
+**Доп. задание \*, 1:**
 
 В Makefile добавил билд и публикацию сервисов Alertmanager, Telegraf и Grafana
 
-**Доп. задание *, 2:**
+**Доп. задание \*, 2:**
 
 Активировал отдачу метрик docker (документация: https://docs.docker.com/config/daemon/prometheus/), в графану подключил дашборд Docker_Engine_Metrics (`monitoring/grafana/dashboards/Docker_Engine_Metrics.json):
 
@@ -130,7 +134,7 @@ yc-user@docker-host:~$ curl -s localhost:9323/metrics | grep -v "^#" | wc -l
 yc-user@docker-host:~$ curl -s localhost:8080/metrics | grep -v "^#" | wc -l
 3044
 ```
-**Доп. задание *, 3:**
+**Доп. задание \*, 3:**
 
 Добавил сбор метрик с Docker демона в Prometheus с помощью Telegraf. Конфиг телеграфа: `telegraf/telegraf.conf`
 Дашборд для графаны: `monitoring/grafana/dashboards/Telegraf_Docker_Metrics.json`
@@ -147,7 +151,7 @@ yc-user@docker-host:~$ curl -s localhost:8080/metrics | grep -v "^#" | wc -l
 3044
 ```
 
-**Доп. задание **, 1:**
+**Доп. задание \*\*, 1:**
 
 Реализовал автоматическое добавление источника данных и созданных в данном ДЗ дашбордов в графану.
 Файл с конфигом истоника данных: `grafana/datasource.yml`
