@@ -1,0 +1,10 @@
+global:
+  slack_api_url: 'https://hooks.slack.com/services/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'
+
+route:
+  receiver: 'slack-notifications'
+
+receivers:
+- name: 'slack-notifications'
+  slack_configs:
+  - channel: '#reddit-allerts'
