@@ -13,8 +13,7 @@ services:
       prometheus_net:
 
   ui:
-    # image: ${USER_NAME}/ui:${UI_TAG}
-    image: ${USER_NAME}/ui:logging
+    image: ${USER_NAME}/ui:${UI_TAG}
     environment:
       - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     ports:
@@ -29,8 +28,7 @@ services:
         tag: service.ui
 
   post:
-    # image: ${USER_NAME}/post:${POST_TAG}
-    image: ${USER_NAME}/post:logging
+    image: ${USER_NAME}/post:${POST_TAG}
     environment:
       - POST_DATABASE_HOST=post_db
       - POST_DATABASE=posts
@@ -50,8 +48,7 @@ services:
         tag: service.post
 
   comment:
-    # image: ${USER_NAME}/comment:${COMMENT_TAG}
-    image: ${USER_NAME}/comment:logging
+    image: ${USER_NAME}/comment:${COMMENT_TAG}
     environment:
       - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     networks:
