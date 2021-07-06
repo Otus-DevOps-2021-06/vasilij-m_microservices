@@ -1,0 +1,19 @@
+---
+- name: Deploy k8s on master
+  hosts: k8s-master
+  become: true
+
+  roles:
+    - docker
+    - k8s_install
+    - control_plane_init
+    - calico_install
+
+- name: Deploy k8s on worker
+  hosts: k8s-worker
+  become: true
+
+  roles:
+    - docker
+    - k8s_install
+    - worker_join

@@ -1,0 +1,44 @@
+---
+- name: Disable swap
+  command: swapoff -a
+  changed_when: False
+
+- name: Remove swap from fstab
+  mount:
+    path: /swapfile
+    fstype: swap
+    state: absent
+
+- name: Update repositories cache and install required packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+    cache_valid_time: "172800"
+  loop: "{{ required_packages }}"
+
+- name: Add Google Cloud public signing key
+  apt_key:
+    url: "{{ k8s_signing_key_url }}"
+    state: present
+
+- name: Add the Kubernetes apt repository
+  apt_repository:
+    repo: "{{ k8s_repo }}"
+    state: present
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: "172800"
+
+- name: Install Kubernetes binaries
+  apt:
+    pkg: "{{ item }}"
+  loop: "{{ k8s_packages }}"
+
+- name: Hold Kubernetes binaries version
+  dpkg_selections:
+    name: "{{ item }}"
+    selection: hold
+  loop: "{{ k8s_packages }}"
