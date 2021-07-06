@@ -1,0 +1,30 @@
+---
+required_packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gnupg-agent
+  - software-properties-common
+  - unzip
+
+# DOCKER
+docker_repo_key_url: https://download.docker.com/linux/ubuntu/gpg
+docker_repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+docker_packages:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+docker_user: ubuntu
+docker_group: docker
+
+# # Python dependencies for PIP
+# python_pip_dependencies:
+#   - python3-setuptools
+#   - python3-pip
+#   - virtualenv
+
+# # PIP packages for docker compose
+# python_pip_packages:
+#   - docker
+#   - docker-compose
+# python_pip_executable: pip3
