@@ -18,6 +18,11 @@ docker_user: ubuntu
 docker_group: docker
 
 # K8S
+k8s_required_packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+
 cni_calico_ipv4pool_cidr: 10.244.0.0/16
 k8s_regular_user: ubuntu
 

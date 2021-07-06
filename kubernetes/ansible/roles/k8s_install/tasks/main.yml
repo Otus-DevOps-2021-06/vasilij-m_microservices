@@ -15,7 +15,7 @@
     state: present
     update_cache: yes
     cache_valid_time: "172800"
-  loop: "{{ required_packages }}"
+  loop: "{{ k8s_required_packages }}"
 
 - name: Add Google Cloud public signing key
   apt_key:
