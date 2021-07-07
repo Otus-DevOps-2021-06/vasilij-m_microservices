@@ -188,7 +188,7 @@ yc-user@docker-host:~$ curl -s localhost:8080/metrics | grep -v "^#" | wc -l
 **2. Доп. задание \*\*:**
   * Установка кластера k8s описана с помощью terraform и ansible. Файлы terraform для поднятия одной машины для control plane и второй для worker'а находятся в `kebernetes/terraform`. Инвентори, роли и плейбуки для установки k8s находятся в `kubernetes/ansible`
 
-### ДЗ №28. Введение в kubernetes
+### ДЗ №28. Kubernetes. Запуск кластера и приложения. Модель безопасности
 
 #### Выполнено:
 **1. Основное задание:**

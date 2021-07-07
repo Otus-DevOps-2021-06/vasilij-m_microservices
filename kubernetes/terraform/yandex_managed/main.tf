@@ -13,6 +13,10 @@ provider "yandex" {
   zone                     = var.zone
 }
 
+data "yandex_compute_image" "ubuntu-image" {
+  family = "ubuntu-1804-lts"
+}
+
 data "yandex_vpc_subnet" "default_central1_a" {
   name = "default-ru-central1-a"
 }
