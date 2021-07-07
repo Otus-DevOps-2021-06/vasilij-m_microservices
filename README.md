@@ -177,7 +177,7 @@ yc-user@docker-host:~$ curl -s localhost:8080/metrics | grep -v "^#" | wc -l
 С помощью трейсов в Zipkin исправил ошибку долгой загрузки поста. Причина была в функции `find_post()`, в строке 167 указана задержка в 3 секунды: `time.sleep(3)`.
 
 
-### ДЗ №25. Введение в kubernetes
+### ДЗ №27. Введение в kubernetes
 
 #### Выполнено:
 **1. Основное задание:**
@@ -187,3 +187,52 @@ yc-user@docker-host:~$ curl -s localhost:8080/metrics | grep -v "^#" | wc -l
 
 **2. Доп. задание \*\*:**
   * Установка кластера k8s описана с помощью terraform и ansible. Файлы terraform для поднятия одной машины для control plane и второй для worker'а находятся в `kebernetes/terraform`. Инвентори, роли и плейбуки для установки k8s находятся в `kubernetes/ansible`
+
+### ДЗ №28. Введение в kubernetes
+
+#### Выполнено:
+**1. Основное задание:**
+  * Развернул кластер Kubernetes локально с помощью Minikube
+  * Описал приложение reddit и объекты типа Service в YAML-манифестах и запустил его
+  * Запустил приложение в dev namespace'е
+  * Развернул кластер Kubernetes в платформе Yandex Cloud Managed Service for kubernetes и задеплоил туда наше приложение
+
+**2. Доп. задание \*\*:**
+  * Развернул Kubernetes-кластер в Yandex cloud с помощью Terraform. Файлы terraform расположены в `kubernetes/terraform/yandex_managed`
+  * Создал YAML-манифесты для включения Web UI (Dashboard). Файлы манифестов расположены в `kubernetes/dashboard`
+
+Документация по деплою дашборда: https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
+
+Доступ в дашборд возможен только при предъявлении токена. Токен выписывается на юзера, поэтому сначала нужно создать юзера, документация: https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md
+
+Токен, полученный на юзера, можно посмотреть следующим образом:
+
+1. Вывести список сервис-акканутовв нэймспейсе `kubernetes-dashboard`:
+
+```
+$ kubectl get serviceaccounts --namespace kubernetes-dashboard
+NAME                   SECRETS   AGE
+admin-user             1         5m12s
+default                1         29m
+kubernetes-dashboard   1         29m
+```
+2. Просмотреть юзера `admin-user`, которого мы создали ранее:
+
+```
+$ kubectl describe secret admin-user --namespace kubernetes-dashboard
+Name:         admin-user-token-qcmft
+Namespace:    kubernetes-dashboard
+Labels:       <none>
+Annotations:  kubernetes.io/service-account.name: admin-user
+              kubernetes.io/service-account.uid: 8e8d5f8a-c0dc-43b3-bc61-3bdd7189a4b9
+
+Type:  kubernetes.io/service-account-token
+
+Data
+====
+ca.crt:     1066 bytes
+namespace:  20 bytes
+token:      eyJhbGciOiJSUzI1NiIsImtpZCI6Ijh2N2hIZ2J3QUlwU1dzc0lvVVVrQk1GbU1tQkVvYldmY3B3X3ZxNHp6azAifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJhZG1pbi11c2VyLXRva2VuLXFjbWZ0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImFkbWluLXVzZXIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiI4ZThkNWY4YS1jMGRjLTQzYjMtYmM2MS0zYmRkNzE4OWE0YjkiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZXJuZXRlcy1kYXNoYm9hcmQ6YWRtaW4tdXNlciJ9.ebnzDe2MoOj_NqiaqKSATBrs0eRkpxpB-So7BfijDW98BDfoI7osE9tjVtsNb9q9ftAPI31WxDk5tipTPqJpStJOCJ8o0VGVvZlx7ZdJNdAJ9Sqk19SIwH6G0r-dyKtS66a7z7mZQzjfn9jLV-yLsc8-pB5O9rOj8gfb_yDGiTgqiMtIcgIFl9iae2p5LstTqMAy3L1hR_ByHVkj5uq6UxQNJCddF55wzUS7zBYPTuOsi9MtAKnMuV8jOIbH1yPMBVpVcOlifY8VfV2CNnSfBujBdlKG7Y8XZ3l-4KKmdelPCxiLNcFaGp8P6b2p0FjAEsNlqSU2OlImnD6FYEO2iA
+```
+
+Для доступа в дашборд нужно выполнить команду `kubectl proxy`, открыть дашборд по ссылке http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/ и выполнить вход с помощью токена.

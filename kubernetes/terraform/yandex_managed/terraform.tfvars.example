@@ -1,0 +1,6 @@
+cloud_id                 = "bwerwergwr5ewrfdn"
+folder_id                = "fewfwy523627dcg23"
+zone                     = "ru-central1-a"
+public_key_path          = "~/.ssh/ssh_key.pub"
+service_account_key_file = "/bla/bla/bla/key-default.json"
+service_account_id       = "sfsf44554sfkkq"
