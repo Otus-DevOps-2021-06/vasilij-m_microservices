@@ -236,3 +236,17 @@ token:      eyJhbGciOiJSUzI1NiIsImtpZCI6Ijh2N2hIZ2J3QUlwU1dzc0lvVVVrQk1GbU1tQkVv
 ```
 
 Для доступа в дашборд нужно выполнить команду `kubectl proxy`, открыть дашборд по ссылке http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/ и выполнить вход с помощью токена.
+
+
+### ДЗ №29. Kubernetes. Networks, Storages.
+
+#### Выполнено:
+**1. Основное задание:**
+  * Настроил доступ к приложению из вне с помощью load balancer'а Yandex'а
+  * Заменил load balancer'а Yandex'а на ingress controller с nginx в качестве балансировщика
+  * Создал ingress, добавил в него поддержку tls
+  * Создал Network Policy для ограничения входящего траффика к сервису mongodb
+  * Создал хранилище для базы на основе PersistentVolume
+
+**2. Доп. задание \*:**
+  * Описал объект Secret для хранения tls.key и tls.crt в виде Kubernetes-манифеста: `kubernetes/reddit/ui-ingress-secret.yml`
