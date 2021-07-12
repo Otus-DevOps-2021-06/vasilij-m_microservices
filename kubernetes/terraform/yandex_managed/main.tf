@@ -70,7 +70,7 @@ resource "yandex_kubernetes_node_group" "reddit_group" {
     }
 
     resources {
-      memory = 4
+      memory = 8
       cores  = 4
     }
 
