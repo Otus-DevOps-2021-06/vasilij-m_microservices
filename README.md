@@ -276,3 +276,43 @@ token:      eyJhbGciOiJSUzI1NiIsImtpZCI6Ijh2N2hIZ2J3QUlwU1dzc0lvVVVrQk1GbU1tQkVv
 Файлы `.gitlab-ci.yml`, полученные в ходе работы, помещены в папку с исходниками для каждой компоненты приложения (`src`).
 
 Файл `.gitlab-ci.yml` для reddit-deploy помещен в `charts`.
+
+
+### ДЗ №31. Kubernetes. Мониторинг и логирование
+
+#### Выполнено:
+**1. Основное задание:**
+  * Установлен Prometheus из помощью helm-чарта, для изменения конфига прометеуса использовался файл custom-values.yaml (`kubernetes/Charts/prometheus/custom-values.yaml`)
+  * Настроено создание Ingress’а для подключения через nginx
+  * Включен сбор метрик с помощью `kube-statemetrics` и `node-exporter`
+  * Конфигурация job’ы `reddit-endpoints` разбита на 3 job’ы для каждой из компонент приложений (`post-endpoints`, `comment-endpoints`, `ui-endpoints`)
+  * Для визуализации метрик прометеуса установлена Grafana из helm-чарта, дашборды сохранены в `kubernetes/grafana-dashboards`
+  * В процессе темплейтинга графаны в дашбордах созданы переменные и изменены запросы к Prometheus для для работы с несколькими окружениями (неймспейсами)
+  *
+
+**2. Доп. задание \*:**
+  * ***Запустить alertmanager в k8s и настроить правила для контроля за доступностью api-сервера и хостов k8s:***
+
+  Alertmanager включен в файле `kubernetes/Charts/prometheus/custom-values.yaml`, правила аллертинга по отправке сообщения в слак описаны в секции `serverFiles.alerting_rules.yml`
+
+**3. Доп. задание \*:**
+  * ***Установите в кластер Prometheus Operator:***
+
+  Для установки Prometheus Operator воспользовался helm-чартом `prometheus-community`: https://github.com/prometheus-community/helm-charts/
+
+  Чарт сохранен в `kubernetes/Charts/kube-prometheus-stack`, все настройки прометеуса задаются в файле `kubernetes/Charts/kube-prometheus-stack/values.yaml`
+
+  Настроено создание Ingress’а для подключения через nginx
+
+  * ***Настройте мониторинг post endpoints:***
+
+  Конфиг мониторинга сервиса post описан в секции `prometheus.additionalScrapeConfigs` в job'е `post-endpoints`
+
+  * ***Приложите используемый манифест serviceMonitor:***
+
+  Файл манифеста: `kubernetes/Charts/kube-prometheus-stack/post-servicemonitoring`
+
+  Так как в ServiceMonitor'ах в `spec.endpoints` обязательно указывать имя порта сервиса, к эндпойнту которого нужно обращаться за метриками, я также задал имя порта в темплейте `service.yaml` в helm-чарте сервиса post
+
+
+***...логирование в процессе...***

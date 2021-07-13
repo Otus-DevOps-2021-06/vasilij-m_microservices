@@ -1,0 +1,18 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prom-operator-kube-prometh-post
+  namespace: default
+  labels:
+    app: kube-prometheus-stack
+    release: prom-operator
+spec:
+  endpoints:
+  - path: /metrics
+    port: post-port
+    interval: 10s
+  selector:
+    matchLabels:
+      app: reddit
+      component: post

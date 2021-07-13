@@ -8,7 +8,7 @@ metadata:
     kubernetes.io/ingress.allow-http: "false"
 spec:
   tls:
-  - secretName: {{ template "ui.fullname" . }}-ingress-tls
+  - secretName: {{ template "ui.fullname" . }}
   rules:
   - http:
       paths:
