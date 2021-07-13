@@ -288,7 +288,6 @@ token:      eyJhbGciOiJSUzI1NiIsImtpZCI6Ijh2N2hIZ2J3QUlwU1dzc0lvVVVrQk1GbU1tQkVv
   * Конфигурация job’ы `reddit-endpoints` разбита на 3 job’ы для каждой из компонент приложений (`post-endpoints`, `comment-endpoints`, `ui-endpoints`)
   * Для визуализации метрик прометеуса установлена Grafana из helm-чарта, дашборды сохранены в `kubernetes/grafana-dashboards`
   * В процессе темплейтинга графаны в дашбордах созданы переменные и изменены запросы к Prometheus для для работы с несколькими окружениями (неймспейсами)
-  *
 
 **2. Доп. задание \*:**
   * ***Запустить alertmanager в k8s и настроить правила для контроля за доступностью api-сервера и хостов k8s:***
@@ -310,7 +309,7 @@ token:      eyJhbGciOiJSUzI1NiIsImtpZCI6Ijh2N2hIZ2J3QUlwU1dzc0lvVVVrQk1GbU1tQkVv
 
   * ***Приложите используемый манифест serviceMonitor:***
 
-  Файл манифеста: `kubernetes/Charts/kube-prometheus-stack/post-servicemonitoring`
+  Файл манифеста: `kubernetes/Charts/kube-prometheus-stack/post-servicemonitoring.yaml`
 
   Так как в ServiceMonitor'ах в `spec.endpoints` обязательно указывать имя порта сервиса, к эндпойнту которого нужно обращаться за метриками, я также задал имя порта в темплейте `service.yaml` в helm-чарте сервиса post
 
