@@ -288,6 +288,9 @@ token:      eyJhbGciOiJSUzI1NiIsImtpZCI6Ijh2N2hIZ2J3QUlwU1dzc0lvVVVrQk1GbU1tQkVv
   * Конфигурация job’ы `reddit-endpoints` разбита на 3 job’ы для каждой из компонент приложений (`post-endpoints`, `comment-endpoints`, `ui-endpoints`)
   * Для визуализации метрик прометеуса установлена Grafana из helm-чарта, дашборды сохранены в `kubernetes/grafana-dashboards`
   * В процессе темплейтинга графаны в дашбордах созданы переменные и изменены запросы к Prometheus для для работы с несколькими окружениями (неймспейсами)
+  * В директории `kubernetes/efk/` созданы манифесты для разворачивания elasticsearch и fluentd
+  * Kibana установлена с помощью helm-чарта `kubernetes/Charts/kibana`
+  *
 
 **2. Доп. задание \*:**
   * ***Запустить alertmanager в k8s и настроить правила для контроля за доступностью api-сервера и хостов k8s:***
@@ -313,5 +316,5 @@ token:      eyJhbGciOiJSUzI1NiIsImtpZCI6Ijh2N2hIZ2J3QUlwU1dzc0lvVVVrQk1GbU1tQkVv
 
   Так как в ServiceMonitor'ах в `spec.endpoints` обязательно указывать имя порта сервиса, к эндпойнту которого нужно обращаться за метриками, я также задал имя порта в темплейте `service.yaml` в helm-чарте сервиса post
 
-
-***...логирование в процессе...***
+**4. Доп. задание \*:**
+  * Создан helm-чарт для установки стека EFK. Чарт находится в директории `kubernetes/Charts/efk`
