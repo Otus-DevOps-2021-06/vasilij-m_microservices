@@ -290,7 +290,7 @@ token:      eyJhbGciOiJSUzI1NiIsImtpZCI6Ijh2N2hIZ2J3QUlwU1dzc0lvVVVrQk1GbU1tQkVv
   * В процессе темплейтинга графаны в дашбордах созданы переменные и изменены запросы к Prometheus для для работы с несколькими окружениями (неймспейсами)
   * В директории `kubernetes/efk/` созданы манифесты для разворачивания elasticsearch и fluentd
   * Kibana установлена с помощью helm-чарта `kubernetes/Charts/kibana`
-  *
+
 
 **2. Доп. задание \*:**
   * ***Запустить alertmanager в k8s и настроить правила для контроля за доступностью api-сервера и хостов k8s:***
