@@ -6,3 +6,5 @@ variables.json
 .terraform/
 .env
 build_info.txt
+tls.crt
+tls.key

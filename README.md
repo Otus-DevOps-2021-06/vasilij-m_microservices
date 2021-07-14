@@ -177,7 +177,7 @@ yc-user@docker-host:~$ curl -s localhost:8080/metrics | grep -v "^#" | wc -l
 С помощью трейсов в Zipkin исправил ошибку долгой загрузки поста. Причина была в функции `find_post()`, в строке 167 указана задержка в 3 секунды: `time.sleep(3)`.
 
 
-### ДЗ №25. Введение в kubernetes
+### ДЗ №27. Введение в kubernetes
 
 #### Выполнено:
 **1. Основное задание:**
@@ -187,3 +187,134 @@ yc-user@docker-host:~$ curl -s localhost:8080/metrics | grep -v "^#" | wc -l
 
 **2. Доп. задание \*\*:**
   * Установка кластера k8s описана с помощью terraform и ansible. Файлы terraform для поднятия одной машины для control plane и второй для worker'а находятся в `kebernetes/terraform`. Инвентори, роли и плейбуки для установки k8s находятся в `kubernetes/ansible`
+
+### ДЗ №28. Kubernetes. Запуск кластера и приложения. Модель безопасности
+
+#### Выполнено:
+**1. Основное задание:**
+  * Развернул кластер Kubernetes локально с помощью Minikube
+  * Описал приложение reddit и объекты типа Service в YAML-манифестах и запустил его
+  * Запустил приложение в dev namespace'е
+  * Развернул кластер Kubernetes в платформе Yandex Cloud Managed Service for kubernetes и задеплоил туда наше приложение
+
+**2. Доп. задание \*\*:**
+  * Развернул Kubernetes-кластер в Yandex cloud с помощью Terraform. Файлы terraform расположены в `kubernetes/terraform/yandex_managed`
+  * Создал YAML-манифесты для включения Web UI (Dashboard). Файлы манифестов расположены в `kubernetes/dashboard`
+
+Документация по деплою дашборда: https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
+
+Доступ в дашборд возможен только при предъявлении токена. Токен выписывается на юзера, поэтому сначала нужно создать юзера, документация: https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md
+
+Токен, полученный на юзера, можно посмотреть следующим образом:
+
+1. Вывести список сервис-акканутовв нэймспейсе `kubernetes-dashboard`:
+
+```
+$ kubectl get serviceaccounts --namespace kubernetes-dashboard
+NAME                   SECRETS   AGE
+admin-user             1         5m12s
+default                1         29m
+kubernetes-dashboard   1         29m
+```
+2. Просмотреть юзера `admin-user`, которого мы создали ранее:
+
+```
+$ kubectl describe secret admin-user --namespace kubernetes-dashboard
+Name:         admin-user-token-qcmft
+Namespace:    kubernetes-dashboard
+Labels:       <none>
+Annotations:  kubernetes.io/service-account.name: admin-user
+              kubernetes.io/service-account.uid: 8e8d5f8a-c0dc-43b3-bc61-3bdd7189a4b9
+
+Type:  kubernetes.io/service-account-token
+
+Data
+====
+ca.crt:     1066 bytes
+namespace:  20 bytes
+token:      eyJhbGciOiJSUzI1NiIsImtpZCI6Ijh2N2hIZ2J3QUlwU1dzc0lvVVVrQk1GbU1tQkVvYldmY3B3X3ZxNHp6azAifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJhZG1pbi11c2VyLXRva2VuLXFjbWZ0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImFkbWluLXVzZXIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiI4ZThkNWY4YS1jMGRjLTQzYjMtYmM2MS0zYmRkNzE4OWE0YjkiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZXJuZXRlcy1kYXNoYm9hcmQ6YWRtaW4tdXNlciJ9.ebnzDe2MoOj_NqiaqKSATBrs0eRkpxpB-So7BfijDW98BDfoI7osE9tjVtsNb9q9ftAPI31WxDk5tipTPqJpStJOCJ8o0VGVvZlx7ZdJNdAJ9Sqk19SIwH6G0r-dyKtS66a7z7mZQzjfn9jLV-yLsc8-pB5O9rOj8gfb_yDGiTgqiMtIcgIFl9iae2p5LstTqMAy3L1hR_ByHVkj5uq6UxQNJCddF55wzUS7zBYPTuOsi9MtAKnMuV8jOIbH1yPMBVpVcOlifY8VfV2CNnSfBujBdlKG7Y8XZ3l-4KKmdelPCxiLNcFaGp8P6b2p0FjAEsNlqSU2OlImnD6FYEO2iA
+```
+
+Для доступа в дашборд нужно выполнить команду `kubectl proxy`, открыть дашборд по ссылке http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/ и выполнить вход с помощью токена.
+
+
+### ДЗ №29. Kubernetes. Networks, Storages.
+
+#### Выполнено:
+**1. Основное задание:**
+  * Настроил доступ к приложению из вне с помощью load balancer'а Yandex'а
+  * Заменил load balancer'а Yandex'а на ingress controller с nginx в качестве балансировщика
+  * Создал ingress, добавил в него поддержку tls
+  * Создал Network Policy для ограничения входящего траффика к сервису mongodb
+  * Создал хранилище для базы на основе PersistentVolume
+
+**2. Доп. задание \*:**
+  * Описал объект Secret для хранения tls.key и tls.crt в виде Kubernetes-манифеста: `kubernetes/reddit/ui-ingress-secret.yml`
+
+
+### ДЗ №30. CI/CD в Kubernetes
+
+#### Выполнено:
+**1. Основное задание:**
+  * Установлен helm v2.17.0, а также серверная часть Helm’а - Tiller
+  * Для каждого компонента приложения reddit разработаны helm chart'ы, находятся в `kubernetes/charts`
+  * Helm chart'ы шаблонизированы, значения переменных определены в файлах `values.yaml` для каждого компонента
+  * В файлах `_helpers.tpl` описана функция по заданию имени пода, добавлено её использование в шаблоны
+  * Создан единый чарт reddit для запуска всех компонентов приложения в одном релизе
+  * Проверена работа helm2 tiller plugin и helm3, которые позволяют обойтись без сервера Tiller
+  * С помощью Helm Chart’а из пакета Omnibus был установлен Gitlab, для трех микросервисов (ui, post, comment) созданы собственные проекты, также добавлен проект reddit-deploy по запуску единого приложения в окружениях staging и production
+  * В каждом проекте в файлах `.gitlab-ci.yml` описаны пайплайны для сборки, фиктивного тестирования, релиза и запуска приложения
+  * В пайплайнах описаны функции по созданию и удаления окружений по коммиту в feature ветки
+  * Изменен пайплайн сервиса COMMENT, использующий для деплоя helm2 таким образом, что деплой осуществляется с использованием tiller plugin
+  * Изменен пайплайн сервиса POST таким образом, что он использует helm3 для деплоя
+  * Переделан пайплайн для reddit-deploy, блок auto_devops удален, скрипты и переменные из него вынесены в джобы пайплайна
+
+
+**2. Доп. задание \*:**
+  * Связал пайплайны сборки образов и пайплайн деплоя на staging и production так, чтобы после релиза образа из ветки мастер запускался деплой уже новой версии приложения на production. Для этого я добавил в пайплайны сборки и релиза микросервисов ui, post, comment две джобы (два варианта, как решить данную задачу): deploy-master и deploy-master-api. К сожалению, в устанавливаемой для данного ДЗ версии Gitlab отсутствует поддержка тригеров запуска пайплайнов (Multi-project pipelines), поэтому джобы deploy-master и deploy-master-api закоментированы.
+
+Файлы `.gitlab-ci.yml`, полученные в ходе работы, помещены в папку с исходниками для каждой компоненты приложения (`src`).
+
+Файл `.gitlab-ci.yml` для reddit-deploy помещен в `charts`.
+
+
+### ДЗ №31. Kubernetes. Мониторинг и логирование
+
+#### Выполнено:
+**1. Основное задание:**
+  * Установлен Prometheus из помощью helm-чарта, для изменения конфига прометеуса использовался файл custom-values.yaml (`kubernetes/Charts/prometheus/custom-values.yaml`)
+  * Настроено создание Ingress’а для подключения через nginx
+  * Включен сбор метрик с помощью `kube-statemetrics` и `node-exporter`
+  * Конфигурация job’ы `reddit-endpoints` разбита на 3 job’ы для каждой из компонент приложений (`post-endpoints`, `comment-endpoints`, `ui-endpoints`)
+  * Для визуализации метрик прометеуса установлена Grafana из helm-чарта, дашборды сохранены в `kubernetes/grafana-dashboards`
+  * В процессе темплейтинга графаны в дашбордах созданы переменные и изменены запросы к Prometheus для для работы с несколькими окружениями (неймспейсами)
+  * В директории `kubernetes/efk/` созданы манифесты для разворачивания elasticsearch и fluentd
+  * Kibana установлена с помощью helm-чарта `kubernetes/Charts/kibana`
+
+
+**2. Доп. задание \*:**
+  * ***Запустить alertmanager в k8s и настроить правила для контроля за доступностью api-сервера и хостов k8s:***
+
+  Alertmanager включен в файле `kubernetes/Charts/prometheus/custom-values.yaml`, правила аллертинга по отправке сообщения в слак описаны в секции `serverFiles.alerting_rules.yml`
+
+**3. Доп. задание \*:**
+  * ***Установите в кластер Prometheus Operator:***
+
+  Для установки Prometheus Operator воспользовался helm-чартом `prometheus-community`: https://github.com/prometheus-community/helm-charts/
+
+  Чарт сохранен в `kubernetes/Charts/kube-prometheus-stack`, все настройки прометеуса задаются в файле `kubernetes/Charts/kube-prometheus-stack/values.yaml`
+
+  Настроено создание Ingress’а для подключения через nginx
+
+  * ***Настройте мониторинг post endpoints:***
+
+  Конфиг мониторинга сервиса post описан в секции `prometheus.additionalScrapeConfigs` в job'е `post-endpoints`
+
+  * ***Приложите используемый манифест serviceMonitor:***
+
+  Файл манифеста: `kubernetes/Charts/kube-prometheus-stack/post-servicemonitoring.yaml`
+
+  Так как в ServiceMonitor'ах в `spec.endpoints` обязательно указывать имя порта сервиса, к эндпойнту которого нужно обращаться за метриками, я также задал имя порта в темплейте `service.yaml` в helm-чарте сервиса post
+
+**4. Доп. задание \*:**
+  * Создан helm-чарт для установки стека EFK. Чарт находится в директории `kubernetes/Charts/efk`
